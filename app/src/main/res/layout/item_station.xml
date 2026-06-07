@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="160dp"
+    android:layout_height="match_parent"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/itemStationName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Station Node"
+            android:textColor="#003366"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:ellipsize="end"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/itemStatusBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Healthy"
+            android:background="#C8E6C9"
+            android:textColor="#2E7D32"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="3dp"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginVertical="8dp"/>
+
+        <TextView
+            android:id="@+id/itemTurbidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Turbidity: -- NTU"
+            android:textSize="11sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="2dp"/>
+
+        <TextView
+            android:id="@+id/itemPH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pH Level: -- pH"
+            android:textSize="11sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/btnSeeDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="See Details →"
+            android:textColor="#0066CC"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

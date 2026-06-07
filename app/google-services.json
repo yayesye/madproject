@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1074021187328",
+    "project_id": "waterfilteringmonitor",
+    "storage_bucket": "waterfilteringmonitor.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074021187328:android:3e1ebb162b0d38d9527de5",
+        "android_client_info": {
+          "package_name": "com.example.authentication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1074021187328-1bqs0hrao8ifrtbk9e8mvtcouestk26c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAb5i5j_jaWP2iaD3IxT1txK0ZTEzjDS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1074021187328-1bqs0hrao8ifrtbk9e8mvtcouestk26c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,38 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Water Filter Monitoring</string>
+
+    <!-- Emir's strings (from MADPROJECT) -->
+    <string name="first_underline"><u>First Time Here? Check out what we do!</u></string>
+    <string name="report_underline"><u>Info not Right? Report to us via email</u></string>
+
+    <!-- Report Issue strings (Dhila's module) -->
+    <string-array name="issue_types">
+        <item>No Water Coming Out</item>
+        <item>Water is Dirty/Brown</item>
+        <item>Strange Taste or Smell</item>
+        <item>Low Water Pressure</item>
+        <item>Filter Leaking</item>
+        <item>Strange Noise from System</item>
+        <item>Other Issue</item>
+    </string-array>
+    <string name="report_issue">Report an Issue</string>
+    <string name="help_text">Help us improve water quality</string>
+    <string name="issue_type">Issue Type</string>
+    <string name="description">Description</string>
+    <string name="submit_report">Submit Report</string>
+
+    <!-- Maintenance strings (Dhila's module) -->
+    <string name="maintenance_tasks">Maintenance Tasks</string>
+    <string name="track_maintenance">Track and manage maintenance</string>
+    <string name="shake_hint">⚡ Shake phone to refresh</string>
+    <string name="pending">Pending</string>
+    <string name="completed">Completed</string>
+    <string name="all_tasks">All Tasks</string>
+
+    <!-- Authentication strings (Your module) -->
+    <string name="loginstring"><u>Already have an account? Login</u></string>
+    <string name="signupstring"><u>Dont have an account? Sign Up</u></string>
+
+    <string name="default_web_client_id">1074021187328-1bqs0hrao8ifrtbk9e8mvtcouestk26c.apps.googleusercontent.com</string>
+</resources>

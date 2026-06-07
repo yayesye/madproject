@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme -->
+    <style name="Base.Theme.WaterFilter" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your theme here -->
+    </style>
+
+    <style name="Theme.WaterFilter" parent="Base.Theme.WaterFilter" />
+</resources>
