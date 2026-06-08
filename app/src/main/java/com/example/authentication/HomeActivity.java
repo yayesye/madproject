@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -203,8 +204,27 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setUser() {
         TextView setusername = findViewById(R.id.UserName);
-        String username = getIntent().getStringExtra("USERNAME");
-        setusername.setText(username != null && !username.isEmpty() ? username : "User");
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        
+        if (mAuth.getCurrentUser() != null) {
+            String uid = mAuth.getCurrentUser().getUid();
+            firebasedb.collection("users").document(uid).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String username = documentSnapshot.getString("username");
+                            if (username != null && !username.isEmpty()) {
+                                setusername.setText(username + "!");
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        String intentName = getIntent().getStringExtra("USERNAME");
+                        setusername.setText(intentName != null && !intentName.isEmpty() ? intentName : "User");
+                    });
+        } else {
+            String username = getIntent().getStringExtra("USERNAME");
+            setusername.setText(username != null && !username.isEmpty() ? username : "User");
+        }
     }
 
     private void waterusagemore() {
