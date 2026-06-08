@@ -48,6 +48,17 @@
 
         </LinearLayout>
 
+        <!-- Location Status -->
+        <TextView
+            android:id="@+id/tvLocationName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Detecting location..."
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:gravity="center"
+            android:layout_marginBottom="12dp" />
+
         <!-- Status Banner -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -464,6 +475,66 @@
 
         </LinearLayout>
 
+        <!-- Manual Inspection Logs (CRUD Section) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manual Inspection Logs"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A1A"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="10dp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <EditText
+                    android:id="@+id/etLogTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Station Name / ID"
+                    android:textSize="14sp"
+                    android:padding="10dp"
+                    android:background="#F5F5F5"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/etLogComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Log your observation here..."
+                    android:textSize="14sp"
+                    android:padding="10dp"
+                    android:background="#F5F5F5"
+                    android:layout_marginBottom="8dp" />
+
+                <Button
+                    android:id="@+id/btnAddLog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add Log Entry"
+                    android:backgroundTint="#1A1A1A"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvInspectionLogs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -472,8 +543,7 @@
             android:text="@string/report_underline"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
     </LinearLayout>
 

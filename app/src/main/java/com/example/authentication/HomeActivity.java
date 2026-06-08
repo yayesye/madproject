@@ -4,31 +4,41 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
 
     FirebaseFirestore firebasedb;
+    private RecyclerView rvNotes;
+    private NotesAdapter notesAdapter;
+    private List<NoteModel> noteList;
+    private EditText etQuickNote;
+    private Button btnAddNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,159 +46,198 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-        // firebase
         firebasedb = FirebaseFirestore.getInstance();
 
-        //logout
+        // UI components
+        etQuickNote = findViewById(R.id.etQuickNote);
+        btnAddNote = findViewById(R.id.btnAddNote);
+        rvNotes = findViewById(R.id.rvQuickNotes);
 
+        rvNotes.setLayoutManager(new LinearLayoutManager(this));
+        noteList = new ArrayList<>();
+        notesAdapter = new NotesAdapter(noteList);
+        rvNotes.setAdapter(notesAdapter);
 
-        // testing
-        getDBdata();
+        btnAddNote.setOnClickListener(v -> addQuickNote());
+
         setUser();
-        randomButton();
-
-        // homepage nav
         waterqualitymore();
         waterusagemore();
-
-        //implicit intent
         gotowebsite();
-
-        //bottom nav
         bottomnav();
+        loadDashboardSummary();
+        loadQuickNotes();
     }
 
-    // Implicit intent - Open website
-    TextView goweb;
-    private void gotowebsite() {
-        goweb = findViewById(R.id.firstTime);
-        goweb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent gowebsite = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yayesye"));
-                startActivity(gowebsite);
-            }
-        });
+    private void addQuickNote() {
+        String content = etQuickNote.getText().toString().trim();
+        if (content.isEmpty()) {
+            Toast.makeText(this, "Please enter a note", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, Object> note = new HashMap<>();
+        note.put("content", content);
+        note.put("timestamp", System.currentTimeMillis());
+
+        firebasedb.collection("quick_notes")
+                .add(note)
+                .addOnSuccessListener(documentReference -> {
+                    etQuickNote.setText("");
+                    Toast.makeText(HomeActivity.this, "Note saved!", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(HomeActivity.this, "Failed to save note", Toast.LENGTH_SHORT).show());
     }
 
-
-    // Bottom navigation
-    private void bottomnav() {
-        ImageButton nav1, nav2, nav3;
-
-        nav1 = findViewById(R.id.nav1);
-        nav2 = findViewById(R.id.nav2);
-        nav3 = findViewById(R.id.nav3);
-
-        // Home button
-        nav1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Already on home
-                Toast.makeText(HomeActivity.this, "Already on Home", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Help/Questions button
-        nav2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(HomeActivity.this, "Help section coming soon", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Settings button - Link to Damia's Settings
-        nav3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
-                startActivity(intent);
-            }
-        });
+    private void loadQuickNotes() {
+        firebasedb.collection("quick_notes")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) return;
+                    if (value != null) {
+                        noteList.clear();
+                        for (DocumentSnapshot doc : value.getDocuments()) {
+                            NoteModel model = new NoteModel(doc.getId(), doc.getString("content"));
+                            noteList.add(model);
+                        }
+                        notesAdapter.notifyDataSetChanged();
+                    }
+                });
     }
 
-    private void getDBdata() {
-        firebasedb.collection("auth")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("HOMEACTIVITY", document.getId() + "=>" + document.getData());
+    private void updateNote(NoteModel note) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit Note");
+        final EditText input = new EditText(this);
+        input.setText(note.content);
+        builder.setView(input);
+
+        builder.setPositiveButton("Update", (dialog, which) -> {
+            String newContent = input.getText().toString().trim();
+            if (!newContent.isEmpty()) {
+                firebasedb.collection("quick_notes").document(note.id)
+                        .update("content", newContent)
+                        .addOnSuccessListener(aVoid -> Toast.makeText(HomeActivity.this, "Note updated!", Toast.LENGTH_SHORT).show());
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+    private void deleteNote(String id) {
+        firebasedb.collection("quick_notes").document(id)
+                .delete()
+                .addOnSuccessListener(aVoid -> Toast.makeText(HomeActivity.this, "Note deleted!", Toast.LENGTH_SHORT).show());
+    }
+
+    private void loadDashboardSummary() {
+        TextView tvTurbidity = findViewById(R.id.tvTurbidity);
+        TextView tvPH = findViewById(R.id.tvPH);
+        TextView tvUsagePercent = findViewById(R.id.tvUsagePercent);
+        android.widget.ProgressBar progressBar = findViewById(R.id.progressWaterUsage);
+
+        firebasedb.collection("water_metrics").document("current_status")
+                .addSnapshotListener((value, error) -> {
+                    if (value != null && value.exists()) {
+                        String turb = value.getString("turbidity");
+                        String ph = value.getString("ph");
+                        if (turb != null) tvTurbidity.setText(String.format("%s NTU", turb));
+                        if (ph != null) tvPH.setText(String.format("%s pH", ph));
+                    }
+                });
+
+        firebasedb.collection("water_usage")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(1)
+                .addSnapshotListener((value, error) -> {
+                    if (value != null && !value.isEmpty()) {
+                        DocumentSnapshot doc = value.getDocuments().get(0);
+                        String consumptionStr = doc.getString("consumption");
+                        if (consumptionStr != null) {
+                            try {
+                                int consumption = Integer.parseInt(consumptionStr.replaceAll("[^0-9]", ""));
+                                int percent = (consumption * 100) / 1000;
+                                if (percent > 100) percent = 100;
+                                tvUsagePercent.setText(String.format(Locale.getDefault(), "%d%%", percent));
+                                if (progressBar != null) progressBar.setProgress(percent);
+                            } catch (Exception e) {
+                                tvUsagePercent.setText("70%");
                             }
-                        } else {
-                            Log.w("HOMEACTIVITY", "Error getting documents: ", task.getException());
                         }
                     }
                 });
     }
 
-    public TextView setusername;
+    private void gotowebsite() {
+        TextView goweb = findViewById(R.id.firstTime);
+        goweb.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yayesye"));
+            startActivity(intent);
+        });
+    }
+
+    private void bottomnav() {
+        ImageButton nav1 = findViewById(R.id.nav1);
+        ImageButton nav2 = findViewById(R.id.nav2);
+        ImageButton nav3 = findViewById(R.id.nav3);
+
+        nav1.setOnClickListener(v -> Toast.makeText(HomeActivity.this, "Already on Home", Toast.LENGTH_SHORT).show());
+        nav2.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, ReportIssueActivity.class)));
+        nav3.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, SettingsActivity.class)));
+    }
+
     private void setUser() {
-        setusername = findViewById(R.id.UserName);
-        // Get username from intent or Firebase
+        TextView setusername = findViewById(R.id.UserName);
         String username = getIntent().getStringExtra("USERNAME");
-        if (username != null && !username.isEmpty()) {
-            setusername.setText(username);
-        } else {
-            setusername.setText("User");
-        }
+        setusername.setText(username != null && !username.isEmpty() ? username : "User");
     }
 
-    // Test button to insert data
-    private void insertDBdata() {
-        Map<String, Object> user = new HashMap<>();
-        user.put("username", "emir");
-        user.put("age", "18");
-
-        firebasedb.collection("auth")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("FirestoreError", "Success! ID: " + documentReference.getId());
-                        Toast.makeText(HomeActivity.this, "Data Inserted!", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("FirestoreError", "Error writing document", e);
-                        Toast.makeText(HomeActivity.this, "Failed to Insert Data!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void randomButton() {
-        Button random = findViewById(R.id.testbutton);
-        random.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                insertDBdata();
-            }
-        });
-    }
-
-
-
-
-    ImageButton waterqualitymore, waterusagemore;
     private void waterusagemore() {
-        waterusagemore = findViewById(R.id.btnWaterUsageMore);
-        waterusagemore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent gotowaterusage = new Intent(HomeActivity.this, WaterUsageActivity.class);
-                startActivity(gotowaterusage);
-            }
-        });
+        findViewById(R.id.btnWaterUsageMore).setOnClickListener(v -> 
+            startActivity(new Intent(HomeActivity.this, WaterUsageActivity.class)));
     }
+
     private void waterqualitymore() {
-        waterqualitymore = findViewById(R.id.btnWaterQualityMore);
-        waterqualitymore.setOnClickListener(view -> {
-            Intent gotowaterquality = new Intent(HomeActivity.this, WaterQuality.class);
-            startActivity(gotowaterquality);
-        });
+        findViewById(R.id.btnWaterQualityMore).setOnClickListener(view -> 
+            startActivity(new Intent(HomeActivity.this, WaterQuality.class)));
+    }
+
+    // Model and Adapter Classes
+    private static class NoteModel {
+        String id, content;
+        NoteModel(String id, String content) { this.id = id; this.content = content; }
+    }
+
+    private class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
+        List<NoteModel> notes;
+        NotesAdapter(List<NoteModel> notes) { this.notes = notes; }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            NoteModel note = notes.get(position);
+            holder.tvContent.setText(note.content);
+            holder.btnEdit.setOnClickListener(v -> updateNote(note));
+            holder.btnDelete.setOnClickListener(v -> deleteNote(note.id));
+        }
+
+        @Override
+        public int getItemCount() { return notes.size(); }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tvContent;
+            Button btnEdit, btnDelete;
+            ViewHolder(View v) {
+                super(v);
+                tvContent = v.findViewById(R.id.tvNoteContent);
+                btnEdit = v.findViewById(R.id.btnEditNote);
+                btnDelete = v.findViewById(R.id.btnDeleteNote);
+            }
+        }
     }
 }

@@ -97,6 +97,17 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:backgroundTint="#D32F2F"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Share Button (Implicit Intent) -->
+            <Button
+                android:id="@+id/btnShareIssue"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Share Issue Details"
+                android:textSize="14sp"
+                android:backgroundTint="#1A1A1A"
                 android:textColor="@android:color/white" />
 
             <!-- Status Message -->

@@ -297,12 +297,59 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/testbutton"
-                android:layout_width="wrap_content"
+            <!-- Operator Quick Notes (CRUD Section) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="insert"
-                android:layout_gravity="center"/>
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OPERATOR QUICK NOTES"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:letterSpacing="0.08"
+                        android:layout_marginBottom="12dp" />
+
+                    <EditText
+                        android:id="@+id/etQuickNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter a quick note..."
+                        android:textSize="14sp"
+                        android:padding="12dp"
+                        android:background="#F5F5F5"
+                        android:layout_marginBottom="8dp"/>
+
+                    <Button
+                        android:id="@+id/btnAddNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Save Note"
+                        android:backgroundTint="#1A1A1A"
+                        android:textColor="#FFFFFF"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvQuickNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:nestedScrollingEnabled="false" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -311,9 +358,7 @@
                 android:layout_marginTop="20dp"
                 android:textStyle="bold"
                 android:id="@+id/firstTime"
-                android:text="@string/first_underline"
-
-                />
+                android:text="@string/first_underline" />
 
 
 

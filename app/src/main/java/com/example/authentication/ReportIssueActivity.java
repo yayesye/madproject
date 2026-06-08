@@ -1,5 +1,10 @@
 package com.example.authentication;
 
+import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,14 +27,18 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class ReportIssueActivity extends AppCompatActivity {
+public class ReportIssueActivity extends AppCompatActivity implements SensorEventListener {
 
     private Spinner spinnerIssueType;
     private EditText editTextDescription;
-    private Button btnSubmitReport;
+    private Button btnSubmitReport, btnShareIssue;
     private TextView txtStatus;
     private FirebaseFirestore db;
     private String selectedIssueType = "";
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private long lastShakeTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +58,68 @@ public class ReportIssueActivity extends AppCompatActivity {
         spinnerIssueType = findViewById(R.id.spinnerIssueType);
         editTextDescription = findViewById(R.id.editTextDescription);
         btnSubmitReport = findViewById(R.id.btnSubmitReport);
+        btnShareIssue = findViewById(R.id.btnShareIssue);
         txtStatus = findViewById(R.id.txtStatus);
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
+        // Initialize Sensors
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if (sensorManager != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+
         setupSpinner();
         setupSubmitButton();
+
+        // Implicit Intent: Share issue details
+        btnShareIssue.setOnClickListener(v -> {
+            String desc = editTextDescription.getText().toString();
+            if (desc.isEmpty()) desc = "I'm experiencing an issue with the water filter.";
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Water Issue Report: " + selectedIssueType);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, desc);
+            startActivity(Intent.createChooser(shareIntent, "Share via"));
+        });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            float acceleration = (float) Math.sqrt(x * x + y * y + z * z);
+            long now = System.currentTimeMillis();
+
+            if (acceleration > 15 && (now - lastShakeTime) > 2000) {
+                lastShakeTime = now;
+                editTextDescription.setText("");
+                Toast.makeText(this, "Form cleared by shake!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     private void setupSpinner() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,

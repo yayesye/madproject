@@ -68,6 +68,7 @@ dependencies {
 
         // Use this specific, stable version for the Google Sign-In buttons
         implementation("com.google.android.gms:play-services-auth:20.7.0")
+        implementation("com.google.android.gms:play-services-location:21.0.1")
 
         // Standard AndroidX libraries
         implementation("androidx.appcompat:appcompat:1.6.1")
