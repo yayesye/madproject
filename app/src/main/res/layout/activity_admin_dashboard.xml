@@ -1,383 +1,368 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F8FF">
 
+    <!-- Bottom Navigation Bar -->
     <LinearLayout
+        android:id="@+id/adminBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:elevation="8dp"
+        android:gravity="center">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp">
-            <ImageView
-                android:id="@+id/btnBack"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@android:drawable/ic_menu_revert"
-                android:contentDescription="Back" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="Admin Dashboard"
-                android:textColor="#003366"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-            <Button
-                android:id="@+id/btnLogout"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_alignParentEnd="true"
-                android:text="LOGOUT"
-                android:textSize="11sp"
-                android:backgroundTint="#D32F2F"
-                android:textColor="@android:color/white" />
-        </RelativeLayout>
+        <ImageButton
+            android:id="@+id/adminNavHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/home"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Admin Home" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="GLOBAL OVERVIEW"
-            android:textColor="#555555"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+        <ImageButton
+            android:id="@+id/adminNavSettings"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/setting"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Admin Settings" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/adminBottomNav">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            android:layout_marginBottom="24dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:padding="12dp"
-                android:layout_margin="4dp"
-                android:gravity="center"
-                android:orientation="vertical">
-                <TextView android:id="@+id/tvTotalFilters" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#003366"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Stations" android:textSize="11sp" android:textColor="#777777"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:padding="12dp"
-                android:layout_margin="4dp"
-                android:gravity="center"
-                android:orientation="vertical">
-                <TextView android:id="@+id/tvLiveAlerts" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#FF3333"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Active Alerts" android:textSize="11sp" android:textColor="#777777"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:padding="12dp"
-                android:layout_margin="4dp"
-                android:gravity="center"
-                android:orientation="vertical">
-                <TextView android:id="@+id/tvScheduled" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#003366"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Scheduled Tasks" android:textSize="11sp" android:textColor="#777777"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="FILTRATION NETWORK"
-            android:textColor="#555555"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvFiltrationNetwork"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp"/>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@android:color/white">
-
-            <LinearLayout
+            <!-- Header -->
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
+                android:layout_marginBottom="24dp">
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@android:drawable/ic_menu_revert"
+                    android:contentDescription="Back" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SCHEDULER - Create Task"
+                    android:layout_centerHorizontal="true"
+                    android:text="Admin Dashboard"
                     android:textColor="#003366"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp"/>
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Station Target" android:textSize="12sp" android:textColor="#555555"/>
-                <EditText
-                    android:id="@+id/etTargetStation"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:hint="e.g. Kg. Jengka 18"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:padding="8dp"
-                    android:layout_marginBottom="12dp"/>
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Specialist Phone" android:textSize="12sp" android:textColor="#555555"/>
-                <EditText
-                    android:id="@+id/etSpecialistPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:inputType="phone"
-                    android:hint="e.g. 012-3456789"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:padding="8dp"
-                    android:layout_marginBottom="12dp"/>
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Operation Date" android:textSize="12sp" android:textColor="#555555"/>
-                <EditText
-                    android:id="@+id/etOperationDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:hint="Click to select date"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:padding="8dp"
-                    android:layout_marginBottom="16dp"/>
-
-                <Button
-                    android:id="@+id/btnAddTask"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:text="ADD TASK"
-                    android:backgroundTint="#003366"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MANAGE SCHEDULED TASKS"
-            android:textColor="#003366"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvScheduledTasksList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:layout_marginBottom="24dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="REPORTS"
-            android:textColor="#003366"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@android:color/white">
+            <!-- GLOBAL OVERVIEW -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GLOBAL OVERVIEW"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/white"
+                    android:elevation="2dp"
+                    android:padding="12dp"
+                    android:layout_margin="4dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <TextView android:id="@+id/tvTotalFilters" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#003366"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Stations" android:textSize="11sp" android:textColor="#777777"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/white"
+                    android:elevation="2dp"
+                    android:padding="12dp"
+                    android:layout_margin="4dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <TextView android:id="@+id/tvLiveAlerts" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#FF3333"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Active Alerts" android:textSize="11sp" android:textColor="#777777"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/white"
+                    android:elevation="2dp"
+                    android:padding="12dp"
+                    android:layout_margin="4dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <TextView android:id="@+id/tvScheduled" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#003366"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Scheduled Tasks" android:textSize="11sp" android:textColor="#777777"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- FILTRATION NETWORK -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FILTRATION NETWORK"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvFiltrationNetwork"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- SCHEDULER - Create Task -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SCHEDULER - Create Task"
+                        android:textColor="#003366"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Station Target" android:textSize="12sp" android:textColor="#555555"/>
+                    <EditText
+                        android:id="@+id/etTargetStation"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:hint="e.g. Kg. Jengka 18"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:padding="8dp"
+                        android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Specialist Phone" android:textSize="12sp" android:textColor="#555555"/>
+                    <EditText
+                        android:id="@+id/etSpecialistPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:inputType="phone"
+                        android:hint="e.g. 012-3456789"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:padding="8dp"
+                        android:layout_marginBottom="12dp"/>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Operation Date" android:textSize="12sp" android:textColor="#555555"/>
+                    <EditText
+                        android:id="@+id/etOperationDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:hint="Click to select date"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:padding="8dp"
+                        android:layout_marginBottom="16dp"/>
 
                     <Button
-                        android:id="@+id/btnWaterQualityReport"
-                        android:layout_width="0dp"
+                        android:id="@+id/btnAddTask"
+                        android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:text="Water Quality"
+                        android:text="ADD TASK"
+                        android:backgroundTint="#003366"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- MANAGE SCHEDULED TASKS -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MANAGE SCHEDULED TASKS"
+                android:textColor="#003366"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvScheduledTasksList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- USER REPORTS SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="USER REPORTS"
+                android:textColor="#003366"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pending Reports: "
+                    android:textColor="#555555" />
+                <TextView
+                    android:id="@+id/tvPendingReports"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#D32F2F"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvUserReports"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- SEND ALERT SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SEND ALERT TO USERS"
+                android:textColor="#003366"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <EditText
+                        android:id="@+id/etAlertTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:hint="Alert Title"
+                        android:layout_marginBottom="12dp"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:padding="8dp" />
+
+                    <EditText
+                        android:id="@+id/etAlertMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:hint="Alert Message"
+                        android:inputType="textMultiLine"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:padding="8dp"
+                        android:layout_marginBottom="12dp" />
+
+                    <Button
+                        android:id="@+id/btnSendAlert"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="SEND ALERT TO ALL USERS"
+                        android:backgroundTint="#FF5722"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- REPORTS - FIXED: Two buttons -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="REPORTS"
+                android:textColor="#003366"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <Button
+                        android:id="@+id/btnViewReport"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="📋 VIEW SCHEDULED TASKS REPORT"
                         android:backgroundTint="#2196F3"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white"
+                        android:layout_marginBottom="12dp"/>
 
                     <Button
-                        android:id="@+id/btnMaintenanceReport"
-                        android:layout_width="0dp"
+                        android:id="@+id/btnExportReport"
+                        android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:text="Maintenance"
-                        android:backgroundTint="#FF9800"
+                        android:text="📧 EXPORT AND SEND REPORT"
+                        android:backgroundTint="#4CAF50"
                         android:textColor="@android:color/white"/>
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <Button
-                    android:id="@+id/btnExportReport"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:text="EXPORT AND SEND REPORT"
-                    android:backgroundTint="#4CAF50"
-                    android:textColor="@android:color/white"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SENSOR STATUS"
-            android:textColor="#003366"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@android:color/white">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/tvBatteryStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Battery: --"
-                    android:textColor="#555555"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="8dp"/>
-
-                <TextView
-                    android:id="@+id/tvProximityStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Proximity: --"
-                    android:textColor="#555555"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="8dp"/>
-
-                <TextView
-                    android:id="@+id/tvLightStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Light Sensor: -- lux"
-                    android:textColor="#555555"
-                    android:textSize="14sp"/>
-
-                <TextView
-                    android:id="@+id/tvSensorMessage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textColor="#4CAF50"
-                    android:textSize="12sp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="FILTER MAINTENANCE"
-            android:textColor="#003366"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@android:color/white">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/tvFilterLifespan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Filter Lifespan: 100%"
-                    android:textColor="#003366"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp"/>
-
-                <ProgressBar
-                    android:id="@+id/progressFilterLife"
-                    android:layout_width="match_parent"
-                    android:layout_height="8dp"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:progress="100"
-                    android:max="100"
-                    android:layout_marginBottom="8dp"/>
-
-                <TextView
-                    android:id="@+id/tvMaintenanceAlert"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Filter is healthy"
-                    android:textColor="#4CAF50"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="12dp"/>
-
-                <Button
-                    android:id="@+id/btnAlertSpecialist"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:text="SEND ALERT TO SPECIALIST"
-                    android:backgroundTint="#FF5722"
-                    android:textColor="@android:color/white"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

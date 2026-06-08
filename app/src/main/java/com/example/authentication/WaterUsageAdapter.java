@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class WaterUsageAdapter extends RecyclerView.Adapter<WaterUsageAdapter.ViewHolder> {
 
     ArrayList<WaterUsage> list;
-
     OnSelectClick selectListener;
     OnDeleteClick deleteListener;
 
@@ -39,29 +38,26 @@ public class WaterUsageAdapter extends RecyclerView.Adapter<WaterUsageAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_water_usage, parent, false);
-
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
         WaterUsage usage = list.get(position);
 
         holder.txtInfo.setText(
-                usage.consumption + " Liters | "
-                        + usage.users + " Users | "
-                        + usage.hours + " Hours"
+                "💧 " + usage.consumption + " Liters | "
+                        + "👥 " + usage.users + " Users | "
+                        + "⏰ " + usage.hours + " Hours"
         );
 
-        holder.txtInfo.setOnClickListener(v ->
-                selectListener.onSelect(usage));
+        // Edit button - selects the record for updating
+        holder.btnEdit.setOnClickListener(v -> selectListener.onSelect(usage));
 
-        holder.btnDelete.setOnClickListener(v ->
-                deleteListener.onDelete(usage));
+        // Delete button - deletes the record
+        holder.btnDelete.setOnClickListener(v -> deleteListener.onDelete(usage));
     }
 
     @Override
@@ -70,14 +66,13 @@ public class WaterUsageAdapter extends RecyclerView.Adapter<WaterUsageAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
         TextView txtInfo;
-        Button btnDelete;
+        Button btnEdit, btnDelete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             txtInfo = itemView.findViewById(R.id.txtInfo);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }

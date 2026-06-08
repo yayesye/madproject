@@ -13,10 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class WaterUsageActivity extends AppCompatActivity {
@@ -25,7 +29,8 @@ public class WaterUsageActivity extends AppCompatActivity {
     Button btnSave, btnUpdate;
     RecyclerView recyclerView;
 
-    TextView txtDailyLiters, txtActiveUsers, txtUptimeHours;
+    TextView txtDailyLiters, txtActiveUsers, txtUptimeHours, txtDateToday;
+    android.widget.ProgressBar progressDaily, progressWeekly;
 
     FirebaseFirestore db;
     ArrayList<WaterUsage> list;
@@ -48,20 +53,23 @@ public class WaterUsageActivity extends AppCompatActivity {
         txtDailyLiters = findViewById(R.id.txtDailyLiters);
         txtActiveUsers = findViewById(R.id.txtActiveUsers);
         txtUptimeHours = findViewById(R.id.txtUptimeHours);
+        txtDateToday = findViewById(R.id.txtDateToday);
 
+        progressDaily = findViewById(R.id.progressDaily);
+        progressWeekly = findViewById(R.id.progressWeekly);
 
-        // tambah go back button kat page ni
+        // Set today's date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+        String todayDate = dateFormat.format(new Date());
+        if (txtDateToday != null) {
+            txtDateToday.setText("Today : " + todayDate);
+        }
+
+        // Go back button
         ImageButton goback = findViewById(R.id.gobackbutton);
-        goback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        goback.setOnClickListener(v -> finish());
 
-        // ONLY THIS LINE CHANGED - Realtime DB to Firestore
         db = FirebaseFirestore.getInstance();
-
         list = new ArrayList<>();
 
         adapter = new WaterUsageAdapter(list, usage -> {
@@ -69,10 +77,8 @@ public class WaterUsageActivity extends AppCompatActivity {
             etConsumption.setText(usage.consumption);
             etUsers.setText(usage.users);
             etHours.setText(usage.hours);
-            updateTopCards(usage);
             Toast.makeText(this, "Record selected for update", Toast.LENGTH_SHORT).show();
         }, usage -> {
-            // ONLY DELETE CHANGED - Firestore version
             db.collection("water_usage").document(usage.id).delete()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -105,27 +111,24 @@ public class WaterUsageActivity extends AppCompatActivity {
             return;
         }
 
-        // ONLY ID GENERATION CHANGED - Firestore version
         String id = db.collection("water_usage").document().getId();
+        long timestamp = System.currentTimeMillis();
 
         Map<String, Object> usage = new HashMap<>();
         usage.put("id", id);
         usage.put("consumption", consumption);
         usage.put("users", users);
         usage.put("hours", hours);
-        usage.put("timestamp", System.currentTimeMillis());
+        usage.put("timestamp", timestamp);
 
-        // ONLY SAVE CHANGED - Firestore version
         db.collection("water_usage").document(id).set(usage)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Record Saved", Toast.LENGTH_SHORT).show();
-                        WaterUsage newUsage = new WaterUsage(id, consumption, users, hours);
-                        updateTopCards(newUsage);
                         clearFields();
                         loadData();
                     } else {
-                        Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Save failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -145,7 +148,6 @@ public class WaterUsageActivity extends AppCompatActivity {
             return;
         }
 
-        // ONLY UPDATE CHANGED - Firestore version
         Map<String, Object> usage = new HashMap<>();
         usage.put("consumption", consumption);
         usage.put("users", users);
@@ -155,25 +157,30 @@ public class WaterUsageActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Record Updated", Toast.LENGTH_SHORT).show();
-                        WaterUsage updatedUsage = new WaterUsage(selectedId, consumption, users, hours);
-                        updateTopCards(updatedUsage);
                         selectedId = "";
                         clearFields();
                         loadData();
                     } else {
-                        Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Update failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     private void loadData() {
-        // ONLY LOAD CHANGED - Firestore version
+        // NO userId filter - shows ALL records
         db.collection("water_usage")
-                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     list.clear();
+
+                    int totalConsumption = 0;
+                    int totalUsers = 0;
+                    float totalHours = 0;
+                    int recordCount = 0;
+
                     WaterUsage latestUsage = null;
+
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         WaterUsage usage = new WaterUsage();
                         usage.id = document.getString("id");
@@ -181,22 +188,66 @@ public class WaterUsageActivity extends AppCompatActivity {
                         usage.users = document.getString("users");
                         usage.hours = document.getString("hours");
                         list.add(usage);
+
+                        // Calculate totals for top cards
+                        try {
+                            totalConsumption += Integer.parseInt(usage.consumption);
+                            totalUsers += Integer.parseInt(usage.users);
+                            totalHours += Float.parseFloat(usage.hours);
+                            recordCount++;
+                        } catch (NumberFormatException e) {
+                            // Skip if not a number
+                        }
+
                         latestUsage = usage;
                     }
+
+                    // Update top cards with latest OR calculated data
                     if (latestUsage != null) {
-                        updateTopCards(latestUsage);
+                        updateTopCards(latestUsage, totalConsumption, totalUsers, totalHours, recordCount);
+                    } else {
+                        // Default empty state
+                        txtDailyLiters.setText("0 Liters");
+                        txtActiveUsers.setText("👥 Active User\n0 Pax");
+                        txtUptimeHours.setText("🕘 Uptime Hours\n0 Hours");
+                        if (progressDaily != null) progressDaily.setProgress(0);
+                        if (progressWeekly != null) progressWeekly.setProgress(0);
                     }
+
                     adapter.notifyDataSetChanged();
+
+                    // Debug toast
+                    Toast.makeText(this, "Loaded " + list.size() + " records", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Load failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Load failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void updateTopCards(WaterUsage usage) {
+    private void updateTopCards(WaterUsage usage, int totalConsumption, int totalUsers, float totalHours, int recordCount) {
+        // Daily - show latest record
         txtDailyLiters.setText(usage.consumption + " Liters");
-        txtActiveUsers.setText("👥 Active User\n" + usage.users + " Pax");
+
+        // Calculate daily progress (assuming 1000 Liters is max target)
+        try {
+            int consumptionInt = Integer.parseInt(usage.consumption);
+            int dailyProgress = Math.min(consumptionInt * 100 / 1000, 100);
+            if (progressDaily != null) progressDaily.setProgress(dailyProgress);
+        } catch (NumberFormatException e) {
+            if (progressDaily != null) progressDaily.setProgress(0);
+        }
+
+        // Active Users - show average or latest
+        int avgUsers = recordCount > 0 ? totalUsers / recordCount : 0;
+        txtActiveUsers.setText("👥 Active User\n" + avgUsers + " Pax");
+
+        // Uptime Hours - show latest
         txtUptimeHours.setText("🕘 Uptime Hours\n" + usage.hours + " Hours");
+
+        // Weekly progress - based on average consumption (target 5000 Liters per week)
+        int weeklyTarget = 5000;
+        int weeklyProgressValue = Math.min(totalConsumption * 100 / weeklyTarget, 100);
+        if (progressWeekly != null) progressWeekly.setProgress(weeklyProgressValue);
     }
 
     private void clearFields() {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -21,7 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="20dp"
+            android:paddingBottom="80dp">
 
             <!-- Header -->
             <LinearLayout
@@ -47,6 +49,13 @@
                     android:textColor="#666666"
                     android:layout_marginTop="4dp" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡ Shake phone to clear form"
+                    android:textSize="11sp"
+                    android:textColor="#FF9800"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
 
             <!-- Issue Type -->
@@ -100,7 +109,7 @@
                 android:textColor="@android:color/white"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Share Button (Implicit Intent) -->
+            <!-- Share Button -->
             <Button
                 android:id="@+id/btnShareIssue"
                 android:layout_width="match_parent"
@@ -120,6 +129,24 @@
                 android:gravity="center"
                 android:padding="12dp"
                 android:visibility="gone" />
+
+            <!-- MY REPORTS SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📋 My Submitted Reports"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMyReports"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:nestedScrollingEnabled="false" />
 
         </LinearLayout>
     </ScrollView>

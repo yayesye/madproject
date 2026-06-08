@@ -35,18 +35,16 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
         holder.tvTurbidity.setText("Turbidity: " + model.getTurbidity() + " NTU");
         holder.tvPH.setText("pH Level: " + model.getPh() + " pH");
 
-        // Real-time evaluation based on your safety boundary fields
         if (model.getTurbidity() > model.getMaxTurbidityLimit() || model.getPh() < model.getMinPhLimit()) {
-            holder.tvBadge.setText("Alert");
-            holder.tvBadge.setBackgroundColor(0xFFFFCDD2); // Light Soft Red
-            holder.tvBadge.setTextColor(0xFFB71C1C);       // Dark Crimson Red
+            holder.tvBadge.setText("⚠️ Alert");
+            holder.tvBadge.setBackgroundColor(0xFFFFCDD2);
+            holder.tvBadge.setTextColor(0xFFB71C1C);
         } else {
-            holder.tvBadge.setText("Healthy");
-            holder.tvBadge.setBackgroundColor(0xFFC8E6C9); // Light Soft Green
-            holder.tvBadge.setTextColor(0xFF2E7D32);       // Dark Forest Green
+            holder.tvBadge.setText("✅ Healthy");
+            holder.tvBadge.setBackgroundColor(0xFFC8E6C9);
+            holder.tvBadge.setTextColor(0xFF2E7D32);
         }
 
-        // Explicit Intent to open up the parameter management screen
         holder.btnDetails.setOnClickListener(v -> {
             Intent intent = new Intent(context, AdminDashboard2Activity.class);
             intent.putExtra("STATION_ID", model.getStationId());

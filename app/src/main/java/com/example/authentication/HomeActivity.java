@@ -3,13 +3,13 @@ package com.example.authentication;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,13 +176,29 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void bottomnav() {
-        ImageButton nav1 = findViewById(R.id.nav1);
-        ImageButton nav2 = findViewById(R.id.nav2);
-        ImageButton nav3 = findViewById(R.id.nav3);
+        LinearLayout llHome = findViewById(R.id.llHome);
+        LinearLayout llAlerts = findViewById(R.id.llAlerts);
+        LinearLayout llReport = findViewById(R.id.llReport);
+        LinearLayout llSettings = findViewById(R.id.llSettings);
 
-        nav1.setOnClickListener(v -> Toast.makeText(HomeActivity.this, "Already on Home", Toast.LENGTH_SHORT).show());
-        nav2.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, ReportIssueActivity.class)));
-        nav3.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, SettingsActivity.class)));
+        llHome.setOnClickListener(v -> {
+            Toast.makeText(HomeActivity.this, "Already on Home", Toast.LENGTH_SHORT).show();
+        });
+
+        llAlerts.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, NotificationCenterActivity.class);
+            startActivity(intent);
+        });
+
+        llReport.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ReportIssueActivity.class);
+            startActivity(intent);
+        });
+
+        llSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void setUser() {
@@ -193,13 +208,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void waterusagemore() {
-        findViewById(R.id.btnWaterUsageMore).setOnClickListener(v -> 
-            startActivity(new Intent(HomeActivity.this, WaterUsageActivity.class)));
+        findViewById(R.id.btnWaterUsageMore).setOnClickListener(v ->
+                startActivity(new Intent(HomeActivity.this, WaterUsageActivity.class)));
     }
 
     private void waterqualitymore() {
-        findViewById(R.id.btnWaterQualityMore).setOnClickListener(view -> 
-            startActivity(new Intent(HomeActivity.this, WaterQuality.class)));
+        findViewById(R.id.btnWaterQualityMore).setOnClickListener(view ->
+                startActivity(new Intent(HomeActivity.this, WaterQuality.class)));
     }
 
     // Model and Adapter Classes

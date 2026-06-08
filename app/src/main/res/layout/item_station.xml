@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="160dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="6dp"
     app:cardCornerRadius="10dp"
     app:cardElevation="3dp"
@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="12dp"
         android:gravity="center_horizontal">
@@ -19,20 +19,17 @@
             android:id="@+id/itemStationName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Station Node"
+            android:text="Station"
             android:textColor="#003366"
             android:textStyle="bold"
             android:textSize="14sp"
-            android:ellipsize="end"
-            android:maxLines="1" />
+            android:maxLines="1"/>
 
         <TextView
             android:id="@+id/itemStatusBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Healthy"
-            android:background="#C8E6C9"
-            android:textColor="#2E7D32"
             android:paddingHorizontal="10dp"
             android:paddingVertical="3dp"
             android:textSize="11sp"

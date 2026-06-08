@@ -19,6 +19,7 @@
 
         <activity android:name=".HomeActivity" />
         <activity android:name=".WaterQuality" />
+        <activity android:name=".NotificationCenterActivity"/>
         <activity
             android:name=".MaintenanceActivity"
             android:exported="false" />
@@ -28,10 +29,12 @@
             android:exported="false" />
         <activity
             android:name=".SettingsActivity"
-            android:exported="false" />
+            android:exported="true" />
+        <activity android:name=".SeedDataActivity" />
         <activity
             android:name=".AdminDashboardActivity"
-            android:exported="false" />
+            android:exported="true" />
+        <activity android:name=".AdminDashboard2Activity"/>
         <activity
             android:name=".DashboardActivity"
             android:exported="false" />

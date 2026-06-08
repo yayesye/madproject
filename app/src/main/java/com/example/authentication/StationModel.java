@@ -9,7 +9,7 @@ public class StationModel {
     private double maxTurbidityLimit;
     private double minPhLimit;
 
-    // Required empty public constructor for Firestore deserialization
+    // Required empty constructor for Firestore
     public StationModel() {}
 
     public StationModel(String stationId, String name, double turbidity, double ph, double temperature, double maxTurbidityLimit, double minPhLimit) {
@@ -22,7 +22,7 @@ public class StationModel {
         this.minPhLimit = minPhLimit;
     }
 
-    // Getter methods
+    // Getters
     public String getStationId() { return stationId; }
     public String getName() { return name; }
     public double getTurbidity() { return turbidity; }
@@ -30,4 +30,13 @@ public class StationModel {
     public double getTemperature() { return temperature; }
     public double getMaxTurbidityLimit() { return maxTurbidityLimit; }
     public double getMinPhLimit() { return minPhLimit; }
+
+    // Setters (optional but good to have)
+    public void setStationId(String stationId) { this.stationId = stationId; }
+    public void setName(String name) { this.name = name; }
+    public void setTurbidity(double turbidity) { this.turbidity = turbidity; }
+    public void setPh(double ph) { this.ph = ph; }
+    public void setTemperature(double temperature) { this.temperature = temperature; }
+    public void setMaxTurbidityLimit(double maxTurbidityLimit) { this.maxTurbidityLimit = maxTurbidityLimit; }
+    public void setMinPhLimit(double minPhLimit) { this.minPhLimit = minPhLimit; }
 }

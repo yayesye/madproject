@@ -50,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
     private CheckBox cbWaterAlert, cbMaintenanceAlert, cbSystemAlert;
     private TextView tvAppVersion, tvBuildDate;
     private Button btnUpdateProfile, btnChangePassword, btnSavePreferences;
-    private Button btnClearCache, btnDeleteAccount;
+    private Button btnClearCache, btnDeleteAccount, btnLogout;
 
     // Push Notification
     private EditText etNotifTitle, etNotifMessage;
@@ -106,6 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnSavePreferences = findViewById(R.id.btnSavePreferences);
         btnClearCache = findViewById(R.id.btnClearCache);
         btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
+        btnLogout = findViewById(R.id.btnLogout);
 
         // Push Notification
         etNotifTitle = findViewById(R.id.etNotifTitle);
@@ -196,6 +197,23 @@ public class SettingsActivity extends AppCompatActivity {
         btnClearCache.setOnClickListener(v -> clearAllNotifications());
         btnDeleteAccount.setOnClickListener(v -> confirmDeleteAccount());
         btnSendNotification.setOnClickListener(v -> sendPushNotification());
+        btnLogout.setOnClickListener(v -> confirmLogout());
+    }
+
+    private void confirmLogout() {
+        new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Logout", (dialog, which) -> {
+                    mAuth.signOut();
+                    Toast.makeText(SettingsActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void updateProfile() {

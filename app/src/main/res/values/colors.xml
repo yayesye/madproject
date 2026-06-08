@@ -1,21 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From MADPROJECT -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Primary Colors -->
+    <color name="primary">#2196F3</color>
+    <color name="primary_blue">#1E88E5</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="primary_light">#64B5F6</color>
 
-    <!-- From Authentication -->
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#001F3F</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <!-- Accent Colors -->
+    <color name="accent_green">#4CAF50</color>
+    <color name="accent_orange">#FF9800</color>
+    <color name="accent_red">#F44336</color>
+    <color name="accent_purple">#9C27B0</color>
 
-    <!-- App colors -->
-    <color name="bg_app">#E6F4F8</color>
+    <!-- Background Colors -->
+    <color name="bg_app">#F5F5F5</color>
+    <color name="bg_light">#F5F5F5</color>
     <color name="bg_card">#FFFFFF</color>
-    <color name="primary">#001F3F</color>
-    <color name="text_main">#001F3F</color>
-    <color name="text_muted">#64748B</color>
-    <color name="orange_accent">#0284C7</color>
+    <color name="bg_dark">#E0E0E0</color>
+
+    <!-- Text Colors -->
+    <color name="text_main">#212121</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_muted">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
+
+    <!-- Basic Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="orange_accent">#FF9800</color>
+
+    <!-- Status Colors -->
+    <color name="status_safe">#4CAF50</color>
+    <color name="status_warning">#FF9800</color>
+    <color name="status_danger">#F44336</color>
+
+    <!-- Card Colors -->
+    <color name="card_light">#FFFFFF</color>
+    <color name="card_dark">#F8F9FA</color>
 </resources>

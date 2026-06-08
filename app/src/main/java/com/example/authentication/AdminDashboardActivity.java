@@ -2,418 +2,428 @@ package com.example.authentication;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.net.Uri;
-import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
-public class AdminDashboardActivity extends AppCompatActivity implements SensorEventListener {
+public class AdminDashboardActivity extends AppCompatActivity {
 
-    private RecyclerView rvStations;
-    private StationAdapter adapter;
-    private ArrayList<StationModel> stationList;
-
-    private RecyclerView rvTasks;
+    // RecyclerViews
+    private RecyclerView rvStations, rvTasks, rvUserReports;
+    private StationAdapter stationAdapter;
     private TaskAdapter taskAdapter;
+    private UserReportAdapter userReportAdapter;
+
+    // Data lists
+    private ArrayList<StationModel> stationList;
     private ArrayList<TaskModel> taskList;
+    private ArrayList<Report> userReportList;
 
+    // Input fields
     private EditText etStation, etPhone, etDate;
-    private Button btnAddTask, btnLogout;
-    private TextView tvTotal, tvAlerts, tvScheduledCount;
+    private EditText etAlertTitle, etAlertMessage;
+    private Button btnAddTask, btnSendAlert;
+    private TextView tvTotal, tvAlerts, tvScheduledCount, tvPendingReports;
 
-    private Button btnWaterQualityReport, btnMaintenanceReport, btnExportReport;
-    private Button btnAlertSpecialist;
-
-    private SensorManager sensorManager;
-    private Sensor proximitySensor, lightSensor;
-    private TextView tvBatteryStatus, tvProximityStatus, tvLightStatus, tvSensorMessage;
-
-    private TextView tvFilterLifespan, tvMaintenanceAlert;
-    private ProgressBar progressFilterLife;
-    private int filterLifePercent = 100;
-    private Handler filterHandler = new Handler();
-    private Runnable filterRunnable;
-
+    // Firebase
     private FirebaseFirestore db;
     private CollectionReference stationsRef;
     private CollectionReference tasksRef;
-    private FirebaseAuth mAuth;
+    private CollectionReference reportsRef;
+    private CollectionReference notificationsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
+        // Initialize Firebase
         db = FirebaseFirestore.getInstance();
         stationsRef = db.collection("water_stations");
         tasksRef = db.collection("maintenance_tasks");
-        mAuth = FirebaseAuth.getInstance();
+        reportsRef = db.collection("reports");
+        notificationsRef = db.collection("notifications");
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        if (sensorManager != null) {
-            proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-            lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        }
+        // Initialize UI
+        initViews();
 
+        // Setup RecyclerViews
+        setupRecyclerViews();
+
+        // Setup date picker
+        setupDatePicker();
+
+        // Setup realtime data listeners
+        setupRealtimeData();
+
+        // Setup button listeners
+        setupButtonListeners();
+
+        // Load user reports
+        loadUserReports();
+
+        seedStations();
+    }
+    private void seedStations() {
+        CollectionReference stationsRef = db.collection("water_stations");
+
+        StationModel station1 = new StationModel("station_001", "Kampung A Filtration", 2.1, 7.2, 26.5, 5.0, 6.5);
+        StationModel station2 = new StationModel("station_002", "Kampung B Treatment", 3.5, 6.8, 27.0, 5.0, 6.5);
+        StationModel station3 = new StationModel("station_003", "Kampung C Reservoir", 1.8, 7.5, 25.5, 5.0, 6.5);
+
+        stationsRef.document("station_001").set(station1);
+        stationsRef.document("station_002").set(station2);
+        stationsRef.document("station_003").set(station3);
+
+        Toast.makeText(this, "Seeding stations...", Toast.LENGTH_SHORT).show();
+    }
+    private void initViews() {
         rvStations = findViewById(R.id.rvFiltrationNetwork);
         rvTasks = findViewById(R.id.rvScheduledTasksList);
+        rvUserReports = findViewById(R.id.rvUserReports);
+
         etStation = findViewById(R.id.etTargetStation);
         etPhone = findViewById(R.id.etSpecialistPhone);
         etDate = findViewById(R.id.etOperationDate);
+        etAlertTitle = findViewById(R.id.etAlertTitle);
+        etAlertMessage = findViewById(R.id.etAlertMessage);
+
         btnAddTask = findViewById(R.id.btnAddTask);
-        btnLogout = findViewById(R.id.btnLogout);
+        btnSendAlert = findViewById(R.id.btnSendAlert);
+
         tvTotal = findViewById(R.id.tvTotalFilters);
         tvAlerts = findViewById(R.id.tvLiveAlerts);
         tvScheduledCount = findViewById(R.id.tvScheduled);
+        tvPendingReports = findViewById(R.id.tvPendingReports);
+    }
 
-        btnWaterQualityReport = findViewById(R.id.btnWaterQualityReport);
-        btnMaintenanceReport = findViewById(R.id.btnMaintenanceReport);
-        btnExportReport = findViewById(R.id.btnExportReport);
-        btnAlertSpecialist = findViewById(R.id.btnAlertSpecialist);
-
-        tvBatteryStatus = findViewById(R.id.tvBatteryStatus);
-        tvProximityStatus = findViewById(R.id.tvProximityStatus);
-        tvLightStatus = findViewById(R.id.tvLightStatus);
-        tvSensorMessage = findViewById(R.id.tvSensorMessage);
-
-        tvFilterLifespan = findViewById(R.id.tvFilterLifespan);
-        tvMaintenanceAlert = findViewById(R.id.tvMaintenanceAlert);
-        progressFilterLife = findViewById(R.id.progressFilterLife);
-
+    private void setupRecyclerViews() {
         stationList = new ArrayList<>();
         rvStations.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        adapter = new StationAdapter(this, stationList);
-        rvStations.setAdapter(adapter);
+        stationAdapter = new StationAdapter(this, stationList);
+        rvStations.setAdapter(stationAdapter);
 
         taskList = new ArrayList<>();
-        rvTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvTasks.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new TaskAdapter(this, taskList);
         rvTasks.setAdapter(taskAdapter);
-        rvTasks.setNestedScrollingEnabled(false);
 
+        userReportList = new ArrayList<>();
+        rvUserReports.setLayoutManager(new LinearLayoutManager(this));
+        userReportAdapter = new UserReportAdapter(userReportList);
+        rvUserReports.setAdapter(userReportAdapter);
+    }
+
+    private void setupDatePicker() {
         etDate.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
             new DatePickerDialog(this, (view, year, month, dayOfMonth) ->
                     etDate.setText(String.format(Locale.getDefault(), "%d/%d/%d", dayOfMonth, month + 1, year)),
                     c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
         });
-
-        setupRealtimeDashboardMetrics();
-        setupDatabaseInsertOperation();
-        setupBatteryMonitoring();
-        setupFilterLifespanSimulation();
-        setupReportButtons();
-
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
-        btnLogout.setOnClickListener(v -> confirmLogout());
-        btnAlertSpecialist.setOnClickListener(v -> sendAlertToSpecialist());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (proximitySensor != null) {
-            sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-        if (lightSensor != null) {
-            sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(this);
-        if (filterRunnable != null) {
-            filterHandler.removeCallbacks(filterRunnable);
-        }
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-            float distance = event.values[0];
-            if (distance < 5 && distance > 0) {
-                tvProximityStatus.setText("Proximity: Staff detected nearby");
-                tvSensorMessage.setText("Refreshing data...");
-                refreshStationData();
-            } else {
-                tvProximityStatus.setText("Proximity: Clear");
-            }
-        }
-        else if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
-            float lightLevel = event.values[0];
-            tvLightStatus.setText(String.format(Locale.getDefault(), "Light Sensor: %.1f lux", lightLevel));
-            if (lightLevel < 10) {
-                tvSensorMessage.setText("Low light detected - Station may be closed");
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-
-    private void refreshStationData() {
-        stationsRef.get().addOnSuccessListener(querySnapshot -> {
-            int alertCount = 0;
-            for (DocumentSnapshot doc : querySnapshot) {
-                StationModel model = doc.toObject(StationModel.class);
-                if (model != null && (model.getTurbidity() > model.getMaxTurbidityLimit() ||
-                        model.getPh() < model.getMinPhLimit())) {
-                    alertCount++;
-                }
-            }
-            tvAlerts.setText(String.valueOf(alertCount));
-            Toast.makeText(this, "Data refreshed by proximity sensor!", Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private void setupBatteryMonitoring() {
-        BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
-        int batteryPct = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-        int status = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
-        boolean isCharging = (status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL);
-
-        tvBatteryStatus.setText(String.format(Locale.getDefault(), "Battery: %d%% %s",
-                batteryPct, isCharging ? "(Charging)" : "(Battery)"));
-
-        if (batteryPct < 15) {
-            tvSensorMessage.setText("Low battery! Please charge device");
-        }
-    }
-
-    private void setupFilterLifespanSimulation() {
-        filterLifePercent = 100;
-        progressFilterLife.setProgress(filterLifePercent);
-        tvFilterLifespan.setText("Filter Lifespan: 100% Remaining");
-
-        filterRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (filterLifePercent > 0) {
-                    filterLifePercent -= 1;
-                    progressFilterLife.setProgress(filterLifePercent);
-                    tvFilterLifespan.setText(String.format("Filter Lifespan: %d%% Remaining", filterLifePercent));
-
-                    if (filterLifePercent <= 30 && filterLifePercent > 15) {
-                        tvMaintenanceAlert.setText("Warning: Filter needs replacement soon!");
-                        tvMaintenanceAlert.setTextColor(0xFFFF9800);
-                    } else if (filterLifePercent <= 15) {
-                        tvMaintenanceAlert.setText("URGENT: Filter replacement overdue!");
-                        tvMaintenanceAlert.setTextColor(0xFFD32F2F);
-                    } else {
-                        tvMaintenanceAlert.setText("Filter is healthy");
-                        tvMaintenanceAlert.setTextColor(0xFF4CAF50);
-                    }
-                    filterHandler.postDelayed(this, 1000);
-                }
-            }
-        };
-        filterHandler.postDelayed(filterRunnable, 5000);
-    }
-
-    private void sendAlertToSpecialist() {
-        String specialistPhone = null;
-        if (!taskList.isEmpty()) {
-            specialistPhone = taskList.get(0).getSpecialistPhone();
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Send Alert to Specialist");
-
-        final EditText input = new EditText(this);
-        if (specialistPhone != null) {
-            input.setText(specialistPhone);
-        }
-        input.setHint("Enter specialist phone number");
-        builder.setView(input);
-
-        builder.setPositiveButton("SEND SMS", (dialog, which) -> {
-            String phone = input.getText().toString().trim();
-            if (!TextUtils.isEmpty(phone)) {
-                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                smsIntent.setData(Uri.parse("sms:" + phone));
-                smsIntent.putExtra("sms_body", "URGENT: Water filter requires maintenance! Filter at " + filterLifePercent + "%.");
-                startActivity(smsIntent);
-            } else {
-                Toast.makeText(this, "Enter phone number", Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton("CANCEL", null);
-        builder.show();
-    }
-
-    private void setupReportButtons() {
-        btnWaterQualityReport.setOnClickListener(v -> generateWaterQualityReport());
-        btnMaintenanceReport.setOnClickListener(v -> generateMaintenanceReport());
-        btnExportReport.setOnClickListener(v -> exportReportViaEmail());
-    }
-
-    private void generateWaterQualityReport() {
-        StringBuilder report = new StringBuilder();
-        report.append("=== WATER QUALITY REPORT ===\n");
-        report.append("Date: ").append(new java.util.Date()).append("\n\n");
-
-        for (StationModel station : stationList) {
-            report.append("Station: ").append(station.getName()).append("\n");
-            report.append("  Turbidity: ").append(station.getTurbidity()).append(" NTU\n");
-            report.append("  pH Level: ").append(station.getPh()).append("\n");
-            report.append("  Status: ");
-            if (station.getTurbidity() > station.getMaxTurbidityLimit() ||
-                    station.getPh() < station.getMinPhLimit()) {
-                report.append("ALERT - Unsafe\n");
-            } else {
-                report.append("Safe\n");
-            }
-            report.append("\n");
-        }
-
-        new AlertDialog.Builder(this)
-                .setTitle("Water Quality Report")
-                .setMessage(report.toString())
-                .setPositiveButton("OK", null)
-                .show();
-    }
-
-    private void generateMaintenanceReport() {
-        StringBuilder report = new StringBuilder();
-        report.append("=== MAINTENANCE REPORT ===\n");
-        report.append("Date: ").append(new java.util.Date()).append("\n");
-        report.append("Scheduled Tasks: ").append(taskList.size()).append("\n\n");
-
-        for (TaskModel task : taskList) {
-            report.append("Station: ").append(task.getTargetStation()).append("\n");
-            report.append("  Specialist: ").append(task.getSpecialistPhone()).append("\n");
-            report.append("  Date: ").append(task.getDate()).append("\n\n");
-        }
-
-        new AlertDialog.Builder(this)
-                .setTitle("Maintenance Report")
-                .setMessage(report.toString())
-                .setPositiveButton("OK", null)
-                .show();
-    }
-
-    private void exportReportViaEmail() {
-        StringBuilder report = new StringBuilder();
-        report.append("WATER FILTER MONITORING REPORT\n");
-        report.append("==============================\n\n");
-        report.append("Generated: ").append(new java.util.Date()).append("\n\n");
-        report.append("Total Stations: ").append(stationList.size()).append("\n");
-        report.append("Active Alerts: ").append(tvAlerts.getText()).append("\n");
-        report.append("Scheduled Tasks: ").append(taskList.size()).append("\n\n");
-        report.append("Filter Lifespan: ").append(filterLifePercent).append("%\n");
-
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-        emailIntent.setData(Uri.parse("mailto:"));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Water Filter System Report");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, report.toString());
-        startActivity(Intent.createChooser(emailIntent, "Send Report"));
-    }
-
-    private void setupRealtimeDashboardMetrics() {
+    private void setupRealtimeData() {
+        // Load stations
         stationsRef.addSnapshotListener((value, error) -> {
             if (error != null || value == null) return;
             stationList.clear();
-            int totalCount = value.size();
-            int dangerAlertsCount = 0;
-
+            int alertCount = 0;
             for (DocumentSnapshot doc : value.getDocuments()) {
                 StationModel model = doc.toObject(StationModel.class);
                 if (model != null) {
                     stationList.add(model);
                     if (model.getTurbidity() > model.getMaxTurbidityLimit() ||
                             model.getPh() < model.getMinPhLimit()) {
-                        dangerAlertsCount++;
+                        alertCount++;
                     }
                 }
             }
-            tvTotal.setText(String.valueOf(totalCount));
-            tvAlerts.setText(String.valueOf(dangerAlertsCount));
-            adapter.notifyDataSetChanged();
+            tvTotal.setText(String.valueOf(stationList.size()));
+            tvAlerts.setText(String.valueOf(alertCount));
+            stationAdapter.notifyDataSetChanged();
         });
 
+        // Load tasks
         tasksRef.addSnapshotListener((value, error) -> {
             if (error != null || value == null) return;
             taskList.clear();
-            tvScheduledCount.setText(String.valueOf(value.size()));
             for (DocumentSnapshot doc : value.getDocuments()) {
                 TaskModel task = doc.toObject(TaskModel.class);
-                if (task != null) taskList.add(task);
+                if (task != null) {
+                    task.setTaskId(doc.getId());
+                    taskList.add(task);
+                }
             }
+            tvScheduledCount.setText(String.valueOf(taskList.size()));
             taskAdapter.notifyDataSetChanged();
         });
     }
 
-    private void setupDatabaseInsertOperation() {
-        btnAddTask.setOnClickListener(v -> {
-            String stationStr = etStation.getText().toString().trim();
-            String phoneStr = etPhone.getText().toString().trim();
-            String dateStr = etDate.getText().toString().trim();
+    private void loadUserReports() {
+        reportsRef.whereEqualTo("status", "Pending")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null || value == null) return;
+                    userReportList.clear();
+                    for (DocumentSnapshot doc : value.getDocuments()) {
+                        Report report = doc.toObject(Report.class);
+                        if (report != null) {
+                            report.setId(doc.getId());
+                            userReportList.add(report);
+                        }
+                    }
+                    tvPendingReports.setText(String.valueOf(userReportList.size()));
+                    userReportAdapter.notifyDataSetChanged();
+                });
+    }
 
-            if (TextUtils.isEmpty(stationStr) || TextUtils.isEmpty(phoneStr) || TextUtils.isEmpty(dateStr)) {
+    private void setupButtonListeners() {
+        // CREATE maintenance task
+        btnAddTask.setOnClickListener(v -> {
+            String station = etStation.getText().toString().trim();
+            String phone = etPhone.getText().toString().trim();
+            String date = etDate.getText().toString().trim();
+
+            if (TextUtils.isEmpty(station) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(date)) {
                 Toast.makeText(this, "All fields are required!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String customTaskId = tasksRef.document().getId();
-            HashMap<String, Object> taskMap = new HashMap<>();
-            taskMap.put("taskId", customTaskId);
-            taskMap.put("targetStation", stationStr);
-            taskMap.put("specialistPhone", phoneStr);
-            taskMap.put("date", dateStr);
+            Map<String, Object> task = new HashMap<>();
+            task.put("targetStation", station);
+            task.put("specialistPhone", phone);
+            task.put("date", date);
+            task.put("status", "Pending");
+            task.put("createdAt", System.currentTimeMillis());
 
-            tasksRef.document(customTaskId).set(taskMap)
-                    .addOnSuccessListener(aVoid -> {
+            tasksRef.add(task)
+                    .addOnSuccessListener(doc -> {
                         Toast.makeText(this, "Task created successfully!", Toast.LENGTH_SHORT).show();
                         etStation.setText("");
                         etPhone.setText("");
                         etDate.setText("");
                     })
-                    .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        });
+
+        // CREATE alert notification for users
+        btnSendAlert.setOnClickListener(v -> {
+            String title = etAlertTitle.getText().toString().trim();
+            String message = etAlertMessage.getText().toString().trim();
+
+            if (TextUtils.isEmpty(title) || TextUtils.isEmpty(message)) {
+                Toast.makeText(this, "Please enter title and message", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Map<String, Object> notification = new HashMap<>();
+            notification.put("title", title);
+            notification.put("message", message);
+            notification.put("timestamp", System.currentTimeMillis());
+            notification.put("type", "alert");
+
+            notificationsRef.add(notification)
+                    .addOnSuccessListener(doc -> {
+                        Toast.makeText(this, "Alert sent to all users!", Toast.LENGTH_SHORT).show();
+                        etAlertTitle.setText("");
+                        etAlertMessage.setText("");
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        });
+
+        // Reports - Two buttons
+        Button btnViewReport = findViewById(R.id.btnViewReport);
+        Button btnExportReport = findViewById(R.id.btnExportReport);
+
+        btnViewReport.setOnClickListener(v -> showScheduledTasksReport());
+        btnExportReport.setOnClickListener(v -> exportReportViaEmail());
+
+        // Back button
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+
+        // Bottom navigation
+        ImageButton navHome = findViewById(R.id.adminNavHome);
+        ImageButton navSettings = findViewById(R.id.adminNavSettings);
+
+        navHome.setOnClickListener(v -> Toast.makeText(this, "Already on Dashboard", Toast.LENGTH_SHORT).show());
+        navSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDashboardActivity.this, SettingsActivity.class);
+            startActivity(intent);
         });
     }
 
-    private void confirmLogout() {
+    private void showScheduledTasksReport() {
+        if (taskList.isEmpty()) {
+            Toast.makeText(this, "No scheduled tasks available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        StringBuilder report = new StringBuilder();
+        report.append("═══════════════════════════════════\n");
+        report.append("      SCHEDULED TASKS REPORT\n");
+        report.append("═══════════════════════════════════\n");
+        report.append("Date: ").append(new Date()).append("\n");
+        report.append("Total Tasks: ").append(taskList.size()).append("\n\n");
+
+        int taskNumber = 1;
+        for (TaskModel task : taskList) {
+            report.append(taskNumber++).append(". ").append(task.getTargetStation()).append("\n");
+            report.append("   📞 Specialist: ").append(task.getSpecialistPhone()).append("\n");
+            report.append("   📅 Date: ").append(task.getDate()).append("\n");
+            report.append("   📌 Status: ").append(task.getStatus()).append("\n\n");
+        }
+
         new AlertDialog.Builder(this)
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to logout?")
-                .setPositiveButton("LOGOUT", (dialog, which) -> performLogout())
-                .setNegativeButton("CANCEL", null)
+                .setTitle("Scheduled Tasks Report")
+                .setMessage(report.toString())
+                .setPositiveButton("OK", null)
                 .show();
     }
 
-    private void performLogout() {
-        mAuth.signOut();
-        Toast.makeText(this, "Logged out!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(AdminDashboardActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+    private void exportReportViaEmail() {
+        if (taskList.isEmpty()) {
+            Toast.makeText(this, "No tasks to export", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        StringBuilder report = new StringBuilder();
+        report.append("WATER FILTER SYSTEM - MAINTENANCE REPORT\n");
+        report.append("=========================================\n");
+        report.append("Generated: ").append(new Date()).append("\n\n");
+        report.append("Total Scheduled Tasks: ").append(taskList.size()).append("\n\n");
+        report.append("TASK DETAILS:\n");
+        report.append("-------------\n");
+
+        int taskNumber = 1;
+        for (TaskModel task : taskList) {
+            report.append(taskNumber++).append(". ").append(task.getTargetStation()).append("\n");
+            report.append("   Specialist: ").append(task.getSpecialistPhone()).append("\n");
+            report.append("   Date: ").append(task.getDate()).append("\n");
+            report.append("   Status: ").append(task.getStatus()).append("\n\n");
+        }
+
+        report.append("\n--- End of Report ---\n");
+
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Water Filter System - Maintenance Report");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, report.toString());
+        startActivity(Intent.createChooser(emailIntent, "Send Report"));
+    }
+
+    // ==================== INNER ADAPTER FOR USER REPORTS ====================
+
+    class UserReportAdapter extends RecyclerView.Adapter<UserReportAdapter.ViewHolder> {
+        private ArrayList<Report> reports;
+
+        UserReportAdapter(ArrayList<Report> reports) {
+            this.reports = reports;
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_report, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            Report report = reports.get(position);
+            holder.tvIssueType.setText("📋 " + report.getIssueType());
+            holder.tvDescription.setText(report.getDescription());
+            holder.tvUserInfo.setText("👤 " + report.getUserId() + " | 📅 " + report.getTimestamp());
+            holder.tvStatus.setText(report.getStatus());
+
+            if ("Pending".equals(report.getStatus())) {
+                holder.tvStatus.setBackgroundColor(0xFFFF9800);
+            } else {
+                holder.tvStatus.setBackgroundColor(0xFF4CAF50);
+            }
+
+            // DELETE report
+            holder.btnDelete.setOnClickListener(v -> {
+                new AlertDialog.Builder(AdminDashboardActivity.this)
+                        .setTitle("Delete Report")
+                        .setMessage("Delete report from " + report.getUserId() + "?")
+                        .setPositiveButton("DELETE", (dialog, which) -> {
+                            reportsRef.document(report.getId()).delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(AdminDashboardActivity.this, "Report deleted", Toast.LENGTH_SHORT).show();
+                                        sendNotificationToUser("Report Resolved",
+                                                "Your report about '" + report.getIssueType() + "' has been reviewed.");
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(AdminDashboardActivity.this, "Delete failed", Toast.LENGTH_SHORT).show());
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            });
+
+            // RESOLVE report
+            holder.btnResolve.setOnClickListener(v -> {
+                reportsRef.document(report.getId()).update("status", "Resolved")
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(AdminDashboardActivity.this, "Marked as resolved", Toast.LENGTH_SHORT).show();
+                            sendNotificationToUser("Report Resolved",
+                                    "Your report about '" + report.getIssueType() + "' has been resolved.");
+                        });
+            });
+        }
+
+        private void sendNotificationToUser(String title, String message) {
+            Map<String, Object> notification = new HashMap<>();
+            notification.put("title", title);
+            notification.put("message", message);
+            notification.put("timestamp", System.currentTimeMillis());
+            notification.put("type", "notification");
+            notificationsRef.add(notification);
+        }
+
+        @Override
+        public int getItemCount() {
+            return reports.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tvIssueType, tvDescription, tvUserInfo, tvStatus;
+            Button btnDelete, btnResolve;
+
+            ViewHolder(View v) {
+                super(v);
+                tvIssueType = v.findViewById(R.id.tvIssueType);
+                tvDescription = v.findViewById(R.id.tvDescription);
+                tvUserInfo = v.findViewById(R.id.tvUserInfo);
+                tvStatus = v.findViewById(R.id.tvStatus);
+                btnDelete = v.findViewById(R.id.btnDeleteReport);
+                btnResolve = v.findViewById(R.id.btnResolveReport);
+            }
+        }
     }
 }

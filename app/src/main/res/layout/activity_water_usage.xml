@@ -36,16 +36,18 @@
 
         </LinearLayout>
 
-
+        <!-- Today's Date - FIXED: Added ID -->
         <TextView
+            android:id="@+id/txtDateToday"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Today : 18 May 2026"
+            android:text="Today : "
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#000000"
             android:padding="16dp" />
 
+        <!-- Daily Water Usage Card - FIXED: Added progress bar ID -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,10 +64,11 @@
                 android:textColor="#000000" />
 
             <ProgressBar
+                android:id="@+id/progressDaily"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="18dp"
-                android:progress="65"
+                android:progress="0"
                 android:max="100"
                 android:layout_marginTop="10dp" />
 
@@ -79,6 +82,7 @@
                 android:layout_marginTop="12dp" />
         </LinearLayout>
 
+        <!-- Stats Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
@@ -109,6 +113,7 @@
                 android:textColor="#000000" />
         </LinearLayout>
 
+        <!-- Weekly Water Usage - FIXED: Added progress bar ID -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -125,10 +130,11 @@
                 android:textColor="#000000" />
 
             <ProgressBar
+                android:id="@+id/progressWeekly"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="26dp"
-                android:progress="70"
+                android:progress="0"
                 android:max="100"
                 android:layout_marginTop="12dp" />
         </LinearLayout>

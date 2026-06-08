@@ -1,7 +1,6 @@
 package com.example.authentication;
 
 public class WaterUsage {
-
     public String id;
     public String consumption;
     public String users;

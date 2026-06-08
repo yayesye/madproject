@@ -5,49 +5,114 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="30dp"
-
     android:background="#EFEFEF">
 
-
-    <!--  bottom nav bar  -->
+    <!-- Bottom Navigation Bar - 4 buttons -->
     <LinearLayout
         android:id="@+id/bottomnavbar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF"
-        android:gravity="center">
+        android:elevation="8dp"
+        android:gravity="center"
+        android:weightSum="4">
 
-        <ImageButton
-            android:id="@+id/nav1"
+        <LinearLayout
+            android:id="@+id/llHome"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/home"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true">
 
-        <ImageButton
-            android:id="@+id/nav2"
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/home"
+                android:tint="#2196F3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textSize="11sp"
+                android:textColor="#2196F3" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llAlerts"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/questionsign"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true">
 
-        <ImageButton
-            android:id="@+id/nav3"
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/alert"
+                android:tint="#757575" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alerts"
+                android:textSize="11sp"
+                android:textColor="#757575" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llReport"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/setting"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true">
 
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/questionsign"
+                android:tint="#757575" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report"
+                android:textSize="11sp"
+                android:textColor="#757575" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llSettings"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/setting"
+                android:tint="#757575" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textSize="11sp"
+                android:textColor="#757575" />
+        </LinearLayout>
     </LinearLayout>
 
-
-    <!--  main content  -->
-
+    <!-- Main Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -60,6 +125,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- User Profile Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,7 +169,7 @@
                             android:id="@+id/UserName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Damia"
+                            android:text="User"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:textColor="#1A1A1A" />
@@ -111,13 +177,14 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Water Quality Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="@color/white">
+                app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -149,8 +216,7 @@
                             android:layout_marginEnd="8dp"
                             app:cardCornerRadius="8dp"
                             app:cardElevation="0dp"
-                            android:elevation="7dp"
-                            app:cardBackgroundColor="#FFFFFF">
+                            app:cardBackgroundColor="#F5F5F5">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -184,7 +250,7 @@
                             android:layout_marginStart="8dp"
                             app:cardCornerRadius="8dp"
                             app:cardElevation="0dp"
-                            app:cardBackgroundColor="#FFFFFF">
+                            app:cardBackgroundColor="#F5F5F5">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -229,6 +295,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Water Usage Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -297,7 +364,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Operator Quick Notes (CRUD Section) -->
+            <!-- Quick Notes Card - CRUD stays -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -347,7 +414,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:nestedScrollingEnabled="false" />
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -360,9 +426,6 @@
                 android:id="@+id/firstTime"
                 android:text="@string/first_underline" />
 
-
-
         </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>
