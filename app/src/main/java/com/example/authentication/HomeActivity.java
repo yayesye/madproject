@@ -39,6 +39,9 @@ public class HomeActivity extends AppCompatActivity {
         // firebase
         firebasedb = FirebaseFirestore.getInstance();
 
+        //logout
+
+
         // testing
         getDBdata();
         setUser();
@@ -67,6 +70,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
 
     // Bottom navigation
     private void bottomnav() {

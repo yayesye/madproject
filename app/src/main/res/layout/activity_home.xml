@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="30dp"
-    android:paddingBottom="45dp"
+
     android:background="#EFEFEF">
 
 
@@ -117,7 +117,7 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="#D6D6D6">
+                app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -149,6 +149,7 @@
                             android:layout_marginEnd="8dp"
                             app:cardCornerRadius="8dp"
                             app:cardElevation="0dp"
+                            android:elevation="7dp"
                             app:cardBackgroundColor="#FFFFFF">
 
                             <LinearLayout
@@ -311,6 +312,7 @@
                 android:textStyle="bold"
                 android:id="@+id/firstTime"
                 android:text="@string/first_underline"
+
                 />
 
 
