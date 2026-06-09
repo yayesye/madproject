@@ -3,7 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F8FF">
+    android:background="@color/bg_app">
+
+    <!-- Top Branding Bar -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/primary"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:elevation="4dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="@color/white"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="AquaFlow Admin"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center" />
+
+        <View android:layout_width="32dp" android:layout_height="32dp"/>
+    </LinearLayout>
 
     <!-- Bottom Navigation Bar -->
     <LinearLayout
@@ -12,7 +45,7 @@
         android:layout_height="60dp"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
+        android:background="@color/white"
         android:elevation="8dp"
         android:gravity="center">
 
@@ -22,6 +55,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/home"
+            app:tint="@color/primary"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Admin Home" />
 
@@ -31,6 +65,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/setting"
+            app:tint="@color/text_secondary"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Admin Settings" />
     </LinearLayout>
@@ -38,7 +73,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/adminBottomNav">
+        android:layout_below="@id/topBar"
+        android:layout_above="@id/adminBottomNav"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,36 +83,16 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Header -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp">
-                <ImageView
-                    android:id="@+id/btnBack"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@android:drawable/ic_menu_revert"
-                    android:contentDescription="Back" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="Admin Dashboard"
-                    android:textColor="#003366"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
-            <!-- GLOBAL OVERVIEW -->
+            <!-- NETWORK PERFORMANCE -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GLOBAL OVERVIEW"
-                android:textColor="#555555"
+                android:text="NETWORK PERFORMANCE"
+                android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:letterSpacing="0.05"
+                android:layout_marginBottom="12dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,55 +101,67 @@
                 android:weightSum="3"
                 android:layout_marginBottom="24dp">
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
-                    android:elevation="2dp"
-                    android:padding="12dp"
                     android:layout_margin="4dp"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <TextView android:id="@+id/tvTotalFilters" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#003366"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Stations" android:textSize="11sp" android:textColor="#777777"/>
-                </LinearLayout>
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="2dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <TextView android:id="@+id/tvTotalFilters" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Stations" android:textSize="10sp" android:textColor="@color/text_secondary"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
-                    android:elevation="2dp"
-                    android:padding="12dp"
                     android:layout_margin="4dp"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <TextView android:id="@+id/tvLiveAlerts" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#FF3333"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Active Alerts" android:textSize="11sp" android:textColor="#777777"/>
-                </LinearLayout>
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="2dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <TextView android:id="@+id/tvLiveAlerts" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/accent_red"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Alerts" android:textSize="10sp" android:textColor="@color/text_secondary"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
-                    android:elevation="2dp"
-                    android:padding="12dp"
                     android:layout_margin="4dp"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <TextView android:id="@+id/tvScheduled" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#003366"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Scheduled Tasks" android:textSize="11sp" android:textColor="#777777"/>
-                </LinearLayout>
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="2dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <TextView android:id="@+id/tvScheduled" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tasks" android:textSize="10sp" android:textColor="@color/text_secondary"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
 
-            <!-- FILTRATION NETWORK -->
+            <!-- STATION MONITORING -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="FILTRATION NETWORK"
-                android:textColor="#555555"
+                android:text="STATION MONITORING"
+                android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
@@ -144,14 +173,13 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="24dp"/>
 
-            <!-- SCHEDULER - Create Task -->
+            <!-- SCHEDULER -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@android:color/white">
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -162,52 +190,49 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SCHEDULER - Create Task"
-                        android:textColor="#003366"
+                        android:text="CREATE MAINTENANCE TASK"
+                        android:textColor="@color/primary"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp"/>
 
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Station Target" android:textSize="12sp" android:textColor="#555555"/>
                     <EditText
                         android:id="@+id/etTargetStation"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:hint="e.g. Kg. Jengka 18"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:padding="8dp"
+                        android:hint="Station Target"
+                        android:background="@color/bg_app"
+                        android:padding="10dp"
                         android:layout_marginBottom="12dp"/>
 
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Specialist Phone" android:textSize="12sp" android:textColor="#555555"/>
                     <EditText
                         android:id="@+id/etSpecialistPhone"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:inputType="phone"
-                        android:hint="e.g. 012-3456789"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:padding="8dp"
+                        android:hint="Specialist Phone"
+                        android:background="@color/bg_app"
+                        android:padding="10dp"
                         android:layout_marginBottom="12dp"/>
 
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Operation Date" android:textSize="12sp" android:textColor="#555555"/>
                     <EditText
                         android:id="@+id/etOperationDate"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:focusable="false"
                         android:clickable="true"
-                        android:hint="Click to select date"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:padding="8dp"
+                        android:hint="Scheduled Date"
+                        android:background="@color/bg_app"
+                        android:padding="10dp"
                         android:layout_marginBottom="16dp"/>
 
                     <Button
                         android:id="@+id/btnAddTask"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="ADD TASK"
-                        android:backgroundTint="#003366"
-                        android:textColor="@android:color/white" />
+                        android:text="ASSIGN TASK"
+                        app:backgroundTint="@color/primary"
+                        android:textColor="@color/white" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -216,10 +241,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MANAGE SCHEDULED TASKS"
-                android:textColor="#003366"
+                android:textColor="@color/primary"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -234,7 +258,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="USER REPORTS"
-                android:textColor="#003366"
+                android:textColor="@color/primary"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
@@ -251,13 +275,13 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Pending Reports: "
-                    android:textColor="#555555" />
+                    android:textColor="@color/text_secondary" />
                 <TextView
                     android:id="@+id/tvPendingReports"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="#D32F2F"
+                    android:textColor="@color/accent_red"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -267,23 +291,13 @@
                 android:layout_height="200dp"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- SEND ALERT SECTION -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SEND ALERT TO USERS"
-                android:textColor="#003366"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
+            <!-- BROADCAST SYSTEM ALERT -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@android:color/white">
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -291,77 +305,62 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BROADCAST SYSTEM ALERT"
+                        android:textColor="@color/accent_orange"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp"/>
+
                     <EditText
                         android:id="@+id/etAlertTitle"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:hint="Alert Title"
-                        android:layout_marginBottom="12dp"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:padding="8dp" />
+                        android:hint="Alert Headline"
+                        android:background="@color/bg_app"
+                        android:padding="10dp"
+                        android:layout_marginBottom="12dp" />
 
                     <EditText
                         android:id="@+id/etAlertMessage"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:hint="Alert Message"
+                        android:hint="Emergency details..."
                         android:inputType="textMultiLine"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:padding="8dp"
+                        android:background="@color/bg_app"
+                        android:padding="10dp"
                         android:layout_marginBottom="12dp" />
 
                     <Button
                         android:id="@+id/btnSendAlert"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="SEND ALERT TO ALL USERS"
-                        android:backgroundTint="#FF5722"
-                        android:textColor="@android:color/white" />
+                        android:text="SEND BROADCAST"
+                        app:backgroundTint="@color/accent_orange"
+                        android:textColor="@color/white" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- REPORTS - FIXED: Two buttons -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="REPORTS"
-                android:textColor="#003366"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
-            <androidx.cardview.widget.CardView
+            <!-- REPORT MANAGEMENT -->
+            <Button
+                android:id="@+id/btnViewReport"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@android:color/white">
+                android:layout_height="54dp"
+                android:text="VIEW TASKS REPORT"
+                app:backgroundTint="@color/primary_blue"
+                android:textColor="@color/white"
+                android:layout_marginBottom="12dp"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <Button
-                        android:id="@+id/btnViewReport"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="📋 VIEW SCHEDULED TASKS REPORT"
-                        android:backgroundTint="#2196F3"
-                        android:textColor="@android:color/white"
-                        android:layout_marginBottom="12dp"/>
-
-                    <Button
-                        android:id="@+id/btnExportReport"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="📧 EXPORT AND SEND REPORT"
-                        android:backgroundTint="#4CAF50"
-                        android:textColor="@android:color/white"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            <Button
+                android:id="@+id/btnExportReport"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:text="EXPORT DATA TO EMAIL"
+                app:backgroundTint="@color/accent_green"
+                android:textColor="@color/white"
+                android:layout_marginBottom="40dp"/>
 
         </LinearLayout>
     </ScrollView>

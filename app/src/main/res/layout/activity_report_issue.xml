@@ -4,15 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/bg_app">
 
     <!-- Toolbar for Back Button -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#D32F2F"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        android:background="@color/primary"
+        app:titleTextColor="@color/white"
+        android:elevation="4dp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -31,82 +32,95 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Report an Issue"
+                    android:text="System Incident Report"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:textColor="#D32F2F" />
+                    android:textColor="@color/primary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Help us improve water quality"
+                    android:text="Help us maintain water quality standards"
                     android:textSize="14sp"
-                    android:textColor="#666666"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginTop="4dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⚡ Shake phone to clear form"
-                    android:textSize="11sp"
-                    android:textColor="#FF9800"
-                    android:layout_marginTop="8dp" />
             </LinearLayout>
 
             <!-- Issue Type -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Issue Type"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="8dp" />
-
-            <Spinner
-                android:id="@+id/spinnerIssueType"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="#F0F0F0"
-                android:padding="12dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ISSUE CATEGORY"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="8dp" />
+                    <Spinner
+                        android:id="@+id/spinnerIssueType"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@color/bg_app" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Description -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Description"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/editTextDescription"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:hint="Describe the problem in detail"
-                android:gravity="top"
-                android:inputType="textMultiLine"
-                android:padding="12dp"
-                android:background="#F0F0F0"
-                android:layout_marginBottom="24dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OBSERVATION DETAILS"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="8dp" />
+                    <EditText
+                        android:id="@+id/editTextDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:hint="Describe the problem..."
+                        android:gravity="top"
+                        android:inputType="textMultiLine"
+                        android:padding="12dp"
+                        android:background="@color/bg_app" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Submit Button -->
             <Button
                 android:id="@+id/btnSubmitReport"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:text="Submit Report"
+                android:text="SUBMIT REPORT"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:backgroundTint="#D32F2F"
-                android:textColor="@android:color/white"
+                app:backgroundTint="@color/primary"
+                android:textColor="@color/white"
                 android:layout_marginBottom="12dp" />
 
             <!-- Share Button -->
@@ -114,10 +128,9 @@
                 android:id="@+id/btnShareIssue"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Share Issue Details"
-                android:textSize="14sp"
-                android:backgroundTint="#1A1A1A"
-                android:textColor="@android:color/white" />
+                android:text="SHARE DETAILS"
+                app:backgroundTint="@color/text_primary"
+                android:textColor="@color/white" />
 
             <!-- Status Message -->
             <TextView
@@ -127,25 +140,23 @@
                 android:layout_marginTop="16dp"
                 android:textSize="14sp"
                 android:gravity="center"
-                android:padding="12dp"
                 android:visibility="gone" />
 
             <!-- MY REPORTS SECTION -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📋 My Submitted Reports"
+                android:text="My Submitted Reports"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/text_primary"
                 android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="12dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMyReports"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:nestedScrollingEnabled="false" />
 
         </LinearLayout>

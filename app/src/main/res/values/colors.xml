@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary Colors -->
-    <color name="primary">#2196F3</color>
-    <color name="primary_blue">#1E88E5</color>
-    <color name="primary_dark">#1565C0</color>
-    <color name="primary_light">#64B5F6</color>
+    <!-- Professional Water Monitoring Theme Colors -->
+    <color name="primary">#0D47A1</color>
+    <color name="primary_blue">#1565C0</color>
+    <color name="primary_dark">#002171</color>
+    <color name="primary_light">#5472D3</color>
 
     <!-- Accent Colors -->
-    <color name="accent_green">#4CAF50</color>
-    <color name="accent_orange">#FF9800</color>
-    <color name="accent_red">#F44336</color>
-    <color name="accent_purple">#9C27B0</color>
+    <color name="accent_green">#2E7D32</color>
+    <color name="accent_orange">#EF6C00</color>
+    <color name="accent_red">#C62828</color>
+    <color name="accent_purple">#4527A0</color>
 
     <!-- Background Colors -->
-    <color name="bg_app">#F5F5F5</color>
-    <color name="bg_light">#F5F5F5</color>
+    <color name="bg_app">#F0F2F5</color>
+    <color name="bg_light">#F8FAFC</color>
     <color name="bg_card">#FFFFFF</color>
-    <color name="bg_dark">#E0E0E0</color>
+    <color name="bg_dark">#CFD8DC</color>
 
     <!-- Text Colors -->
-    <color name="text_main">#212121</color>
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
-    <color name="text_muted">#757575</color>
-    <color name="text_hint">#BDBDBD</color>
+    <color name="text_main">#102A43</color>
+    <color name="text_primary">#102A43</color>
+    <color name="text_secondary">#486581</color>
+    <color name="text_muted">#627D98</color>
+    <color name="text_hint">#9FB3C8</color>
 
     <!-- Basic Colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="orange_accent">#FF9800</color>
+    <color name="orange_accent">#E65100</color>
 
     <!-- Status Colors -->
-    <color name="status_safe">#4CAF50</color>
-    <color name="status_warning">#FF9800</color>
-    <color name="status_danger">#F44336</color>
+    <color name="status_safe">#2E7D32</color>
+    <color name="status_warning">#F9A825</color>
+    <color name="status_danger">#C62828</color>
 
     <!-- Card Colors -->
     <color name="card_light">#FFFFFF</color>
-    <color name="card_dark">#F8F9FA</color>
+    <color name="card_dark">#F1F5F9</color>
 </resources>
